@@ -14,7 +14,7 @@ func GetOrders(db *gorm.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var orders []models.Order
 
-		err := db.Model(models.Order{}).Find(orders).Error
+		err := db.Model(&models.Order{}).Find(&orders).Error
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, "error retrieving orders")
 			return
@@ -26,8 +26,6 @@ func GetOrders(db *gorm.DB) gin.HandlerFunc {
 
 func CreateOrder(db *gorm.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var orders []models.Order
-
 		defer c.Request.Body.Close()
 
 		body, err := io.ReadAll(c.Request.Body)
@@ -43,12 +41,12 @@ func CreateOrder(db *gorm.DB) gin.HandlerFunc {
 			return
 		}
 
-		err = db.Model(models.Order{}).Save(order).Error
+		err = db.Model(&models.Order{}).Save(&order).Error
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, "error creating order")
 			return
 		}
 
-		c.JSON(http.StatusOK, orders)
+		c.JSON(http.StatusOK, order)
 	}
 }
