@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/sstulio/order-service-demo/internal/app"
 	"github.com/sstulio/order-service-demo/internal/pkg/config"
+	"github.com/sstulio/order-service-demo/internal/pkg/database"
 )
 
 var environment config.Environment
@@ -20,10 +21,10 @@ func init() {
 
 func main() {
 
-	// db, err := database.InitDatabase(environment.DatabaseDNS)
-	// if err != nil {
-	// 	panic(err)
-	// }
+	_, err := database.InitDatabase(environment.DatabaseDNS)
+	if err != nil {
+		panic(err)
+	}
 
 	r := gin.Default()
 
