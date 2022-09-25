@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-service-demo
+spec:
+  replicas: 1
+  revisionHistoryLimit: 0
+  selector:
+    matchLabels:
+      app: order-service-demo
+  template:
+    metadata:
+      name: order-service-demo-1.0
+      labels:
+        app: order-service-demo
+    spec:
+      containers:
+        - image: order-service-demo
+          name: order-service-demo
+          ports:
+            - containerPort: 8080
+              name: port
