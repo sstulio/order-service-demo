@@ -15,7 +15,7 @@ spec:
         app: order-service-demo
     spec:
       containers:
-        - image: order-service-demo
+        - image: sstulio/order-service-demo
           name: order-service-demo
           ports:
             - containerPort: 8080
