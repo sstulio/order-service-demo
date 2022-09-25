@@ -21,14 +21,15 @@ func init() {
 
 func main() {
 
-	_, err := database.InitDatabase(environment.DatabaseDNS)
+	db, err := database.InitDatabase(environment.DatabaseDNS)
 	if err != nil {
 		panic(err)
 	}
 
 	r := gin.Default()
 
-	r.GET("/api/orders/", app.GetOrders)
+	r.GET("/api/orders/", app.GetOrders(db))
+	r.POST("/api/orders/", app.CreateOrder(db))
 
 	if err := r.Run(); err != nil {
 		log.Fatalf("could not initiate web server %v", err)

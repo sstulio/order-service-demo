@@ -1,26 +1,54 @@
 package app
 
 import (
+	"encoding/json"
+	"io"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/sstulio/order-service-demo/internal/models"
+	"gorm.io/gorm"
 )
 
-type Order struct {
-	ID       string
-	Name     string
-	Quantity int
+func GetOrders(db *gorm.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var orders []models.Order
+
+		err := db.Model(models.Order{}).Find(orders).Error
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, "error retrieving orders")
+			return
+		}
+
+		c.JSON(http.StatusOK, orders)
+	}
 }
 
-var orders = []Order{
-	{
-		ID:       "aasdasd",
-		Name:     "Bolsa Zara",
-		Quantity: 2,
-	},
-}
+func CreateOrder(db *gorm.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var orders []models.Order
 
-func GetOrders(c *gin.Context) {
+		defer c.Request.Body.Close()
 
-	c.JSON(http.StatusOK, orders)
+		body, err := io.ReadAll(c.Request.Body)
+		if err != nil {
+			c.JSON(http.StatusUnprocessableEntity, "error reading body")
+			return
+		}
+
+		var order models.Order
+		err = json.Unmarshal(body, &order)
+		if err != nil {
+			c.JSON(http.StatusUnprocessableEntity, "error parsing order request")
+			return
+		}
+
+		err = db.Model(models.Order{}).Save(order).Error
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, "error creating order")
+			return
+		}
+
+		c.JSON(http.StatusOK, orders)
+	}
 }

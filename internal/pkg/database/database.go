@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/sstulio/order-service-demo/internal/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -16,6 +17,10 @@ func InitDatabase(dns string) (*gorm.DB, error) {
 		return nil, errors.New("could not connect to database")
 	}
 	fmt.Println("connected to database!")
+
+	if err := db.AutoMigrate(&models.Order{}); err != nil {
+		return nil, errors.New("could not migrate orders table")
+	}
 
 	return db, nil
 }
