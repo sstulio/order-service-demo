@@ -20,3 +20,10 @@ spec:
           ports:
             - containerPort: 8080
               name: port
+          env:
+            - name: DATABASE_DNS
+              valueFrom:
+                secretKeyRef:
+                  name: order-service-demo-secrets
+                  key: DATABASE_DNS
+                  optional: false
